@@ -38,9 +38,15 @@ class ImageViewController: UIViewController {
     
     private func fetchImageFromURL(){
         if let url = imageURL{
-             let urlcontents = try? Data(contentsOf: url)
-            if let imageData = urlcontents {
-                image = UIImage(data: imageData)
+            
+            DispatchQueue.global(qos : .userInitiated).async { [weak self] in
+                let urlcontents = try? Data(contentsOf: url)
+                if let imageData = urlcontents, url == self?.imageURL {
+                    DispatchQueue.main.async {
+                        
+                        self?.image = UIImage(data: imageData)
+                    }
+                }
             }
         }
     }
@@ -48,13 +54,10 @@ class ImageViewController: UIViewController {
     
     fileprivate var imageView = UIImageView()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // set the model's value here imageURL =
-    }
+ 
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(<#T##animated: Bool##Bool#>)
+        super.viewWillAppear(animated)
         if image == nil{
             fetchImageFromURL()
         }
