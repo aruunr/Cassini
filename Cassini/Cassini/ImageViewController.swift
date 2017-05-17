@@ -24,6 +24,7 @@ class ImageViewController: UIViewController {
     }
     
     
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
    
 //create a model with URL of images
     var imageURL : URL? {
@@ -38,7 +39,7 @@ class ImageViewController: UIViewController {
     
     private func fetchImageFromURL(){
         if let url = imageURL{
-            
+            spinner.startAnimating()
             DispatchQueue.global(qos : .userInitiated).async { [weak self] in
                 let urlcontents = try? Data(contentsOf: url)
                 if let imageData = urlcontents, url == self?.imageURL {
@@ -71,7 +72,7 @@ class ImageViewController: UIViewController {
             imageView.image = newValue
             imageView.sizeToFit()
             scrollView?.contentSize = imageView.frame.size //optional unwrapping here because when prepare is called outlets are not set. so when imageURL is set then outlet scrollView is not yet there during prepare.
-            
+            spinner?.stopAnimating()
         }
     }
     
